@@ -11,6 +11,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/lvCarshares"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/tvCarshareMainFromTo" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/tvCarshareMainFromTo"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:text="Ljubljana -> Maribor" />
 </RelativeLayout>

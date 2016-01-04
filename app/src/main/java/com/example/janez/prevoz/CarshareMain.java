@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.janez.prevoz.Data.Carshare;
@@ -26,19 +27,22 @@ public class CarshareMain extends AppCompatActivity {
 
     PrevozResponse carshares;
     ListView lvCarshares;
+    TextView tvCarshareMainFromTo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_carshare_list);
+        setContentView(R.layout.activity_carshare_main);
+
+        tvCarshareMainFromTo = (TextView)findViewById(R.id.tvCarshareMainFromTo);
 
         CarshareSearchData search_data = (CarshareSearchData) getIntent().getSerializableExtra("search_data");
 
+        tvCarshareMainFromTo.setText(search_data.fromCity + " -> " + search_data.toCity);
 
-        /*Toast toast = Toast.makeText(getApplicationContext(), "https://prevoz.org/api/search/shares/?f=" + search_data.fromCity +
-                      "&t=" + search_data.toCity + "&d=2016-01-03", Toast.LENGTH_LONG);
-        toast.show();*/
-        new JSONTaskGet().execute("https://prevoz.org/api/search/shares/?f=Ljubljana&t=Maribor&d=2016-01-03");
+        String url = "https://prevoz.org/api/search/shares/?f=" + search_data.fromCity +
+                "&t=" + search_data.toCity + "&d=" + search_data.date;
+        new JSONTaskGet().execute(url);
 
         lvCarshares = (ListView) findViewById(R.id.lvCarshares);
         lvCarshares.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -96,15 +100,15 @@ public class CarshareMain extends AppCompatActivity {
         @Override
         protected void onPostExecute(PrevozResponse result) {
             super.onPostExecute(result);
-            List<Carshare> carshares = result.carshareList;
 
-            if (carshares != null) {
+            if (result.carshareList.size() == 0){
+                tvCarshareMainFromTo.setText("Za to relacijo ni prevoza");
+            }
+            else {
+                List<Carshare> carshares = result.carshareList;
                 lvCarshares = (ListView) findViewById(R.id.lvCarshares);
                 CarshareAdapter adapter = new CarshareAdapter(CarshareMain.this,carshares);
                 lvCarshares.setAdapter(adapter);
-            } else {
-                Toast toast = Toast.makeText(getApplicationContext(), "Napaka pri komunikaciji z strežnikom", Toast.LENGTH_SHORT);
-                toast.show();
             }
         }
     }

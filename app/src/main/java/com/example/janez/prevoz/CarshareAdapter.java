@@ -30,8 +30,8 @@ public class CarshareAdapter extends ArrayAdapter<Carshare> {
 
         tvHour.setText(carshare.date);
 
-        if(!tvPrice.getText().toString().equals(""))
-            tvPrice.setText(carshare.price);
+        if(carshare.price != null)
+            tvPrice.setText("Cena: " + Integer.toString(carshare.price) + " €");
 
         return convertView;
     }
