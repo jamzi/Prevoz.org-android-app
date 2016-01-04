@@ -17,8 +17,8 @@ public class CarshareDetail extends AppCompatActivity {
 
     private TextView tvCarshareDetailFrom,tvCarshareDetailTo,
             tvCarshareDetailDate,tvCarshareDetailPrice,tvCarshareDetailPeople,
-            tvCarshareDetailInsurance,tvCarshareDetailComment,tvCarshareDetailAuthor,
-            tvCarshareDetailContact;
+            tvCarshareDetailInsurance,tvCarshareDetailComment,tvCarshareDetailAuthor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
