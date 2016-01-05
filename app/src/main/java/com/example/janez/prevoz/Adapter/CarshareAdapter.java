@@ -1,4 +1,4 @@
-package com.example.janez.prevoz;
+package com.example.janez.prevoz.Adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.example.janez.prevoz.Data.Carshare;
+import com.example.janez.prevoz.R;
 
 import java.util.List;
 

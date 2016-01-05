@@ -67,7 +67,7 @@ public class DatabaseConnector {
      */
     public Cursor getAllCarshares() {
         return database.query("carshares", new String[]{"_id", "fromCity","toCity","date"},
-                null, null, null, null, "fromCity");
+                null, null, null, null, "_id DESC");
     }
 
     /**
@@ -76,12 +76,13 @@ public class DatabaseConnector {
      * The database connection object has to be open before calling
      * this method and closed afterwards.
      *
-     * @param id Contact's id
      */
-    public void deleteContact(long id) {
+    public String deleteAllCarshares() {
         open();
-        database.delete("contacts", "_id=" + id, null);
+        database.execSQL("delete from carshares");
         close();
+
+        return "Zadnji vnosi uspešno pobrisani";
     }
 
     private class DatabaseOpenHelper extends SQLiteOpenHelper {
@@ -109,5 +110,6 @@ public class DatabaseConnector {
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             // Executed each time the DB version is changed
         }
+
     }
 }

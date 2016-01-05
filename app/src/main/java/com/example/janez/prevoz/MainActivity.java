@@ -1,25 +1,28 @@
 package com.example.janez.prevoz;
 
-import android.app.DatePickerDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.janez.prevoz.Adapter.CarshareSearchAdapter;
 import com.example.janez.prevoz.Data.CarshareSearchData;
 import com.example.janez.prevoz.Data.DatabaseConnector;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
@@ -30,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
     private DatePicker dpDate;
     private TextView tvInfo;
 
+    private ListView lvLastSearch;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +42,19 @@ public class MainActivity extends AppCompatActivity {
 
         //zadnja iskanja
         new getCarsharesTask().execute();
+
+        lvLastSearch = (ListView) findViewById(R.id.lvLastSearch);
+        lvLastSearch.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                CarshareSearchData data = (CarshareSearchData) parent.getItemAtPosition(position);
+
+                Intent intent = new Intent(MainActivity.this, CarshareMain.class);
+                intent.putExtra("search_data", data);
+                startActivity(intent);
+            }
+        });
 
         btnSearchCarshare = (Button)findViewById(R.id.btnSearchCarshare);
         btnSearchCarshare.setOnClickListener(new View.OnClickListener() {
@@ -79,6 +97,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        //zadnja iskanja
+        new getCarsharesTask().execute();
     }
 
     private class getCarsharesTask extends AsyncTask<Object, Object, Cursor> {
@@ -94,9 +121,58 @@ public class MainActivity extends AppCompatActivity {
         // use the Cursor returned from the doInBackground method
         @Override
         protected void onPostExecute(Cursor result) {
+            lvLastSearch = (ListView) findViewById(R.id.lvLastSearch);
+            ArrayList<CarshareSearchData> searches = new ArrayList<>();
+
+            while(result.moveToNext()){
+                searches.add(new CarshareSearchData(result.getString(1), result.getString(2), result.getString(3)));
+            }
+            if(searches.size() > 0){
+                CarshareSearchAdapter adapter = new CarshareSearchAdapter(MainActivity.this,searches);
+                lvLastSearch.setAdapter(adapter);
+            }
             databaseConnector.close();
         }
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.clearDB) {
+            new clearCarsharesTask().execute();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private class clearCarsharesTask extends AsyncTask<Object, Void, String> {
+        DatabaseConnector databaseConnector = new DatabaseConnector(getApplicationContext());
+
+        // perform the database access
+        @Override
+        protected String doInBackground(Object... params) {
+            databaseConnector.open();
+
+            return databaseConnector.deleteAllCarshares();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+            Toast toast = Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT);
+            toast.show();
+
+            databaseConnector.close();
+
+            lvLastSearch.setAdapter(null);
+        }
+
+    }
+
 
 }
 

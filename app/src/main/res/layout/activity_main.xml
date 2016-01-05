@@ -11,8 +11,7 @@
         android:layout_height="wrap_content"
         android:text="Išči"
         android:id="@+id/btnSearchCarshare"
-        android:layout_below="@+id/datePicker"
-        android:layout_centerHorizontal="true" />
+        android:layout_below="@+id/datePicker" />
 
     <EditText
         android:layout_width="match_parent"
@@ -50,9 +49,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Small Text"
-        android:id="@+id/textView"
-        android:layout_below="@+id/tvInfoSearchCarshare"
+        android:text="Zadnja iskanja:"
+        android:id="@+id/tvLastSearchLabel"
+        android:layout_alignTop="@+id/tvInfoSearchCarshare"
+        android:layout_alignParentStart="true" />
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/lvLastSearch"
+        android:layout_below="@+id/tvLastSearchLabel"
         android:layout_alignParentStart="true" />
 
 </RelativeLayout>

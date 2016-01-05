@@ -9,8 +9,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.example.janez.prevoz.Adapter.CarshareAdapter;
 import com.example.janez.prevoz.Data.Carshare;
 import com.example.janez.prevoz.Data.CarshareSearchData;
 import com.example.janez.prevoz.Data.PrevozResponse;
@@ -101,7 +101,7 @@ public class CarshareMain extends AppCompatActivity {
         protected void onPostExecute(PrevozResponse result) {
             super.onPostExecute(result);
 
-            if (result.carshareList.size() == 0){
+            if (result.carshareList.size() == 0 || result == null){
                 tvCarshareMainFromTo.setText("Za to relacijo ni prevoza");
             }
             else {
