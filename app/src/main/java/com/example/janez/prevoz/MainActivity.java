@@ -1,10 +1,17 @@
 package com.example.janez.prevoz;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.NotificationCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvInfo;
 
     private ListView lvLastSearch;
+    private CoordinatorLayout coordinatorLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,14 +68,17 @@ public class MainActivity extends AppCompatActivity {
         btnSearchCarshare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                etFromCity = (EditText)findViewById(R.id.etFromCity);
-                etToCity = (EditText)findViewById(R.id.etToCity);
+
+
+
+                etFromCity = (EditText) findViewById(R.id.etFromCity);
+                etToCity = (EditText) findViewById(R.id.etToCity);
 
                 String fromCity = etFromCity.getText().toString();
                 String toCity = etToCity.getText().toString();
 
-                tvInfo = (TextView)findViewById(R.id.tvInfoSearchCarshare);
-                dpDate = (DatePicker)findViewById(R.id.datePicker);
+                tvInfo = (TextView) findViewById(R.id.tvInfoSearchCarshare);
+                dpDate = (DatePicker) findViewById(R.id.datePicker);
 
                 int year = dpDate.getYear();
                 int month = dpDate.getMonth();
@@ -79,21 +90,21 @@ public class MainActivity extends AppCompatActivity {
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
                 String strDate = format.format(calendar.getTime());
 
-                if (fromCity.equals("")|| toCity.equals("")){
+                if (fromCity.equals("") || toCity.equals("")) {
                     tvInfo.setText("Manjkajoči podatki o prevozu!");
-                }
-                else {
+                } else {
                     tvInfo.setText("");
-                    CarshareSearchData data = new CarshareSearchData(fromCity,toCity,strDate);
+                    CarshareSearchData data = new CarshareSearchData(fromCity, toCity, strDate);
 
                     //dodamo v SQLite bazo za pregled zadnjih iskanj
                     DatabaseConnector databaseConnector = new DatabaseConnector(getApplicationContext());
-                    databaseConnector.insertCarshare(data.fromCity, data.toCity,data.date);
+                    databaseConnector.insertCarshare(data.fromCity, data.toCity, data.date);
 
                     Intent intent = new Intent(MainActivity.this, CarshareMain.class);
                     intent.putExtra("search_data", data);
                     startActivity(intent);
                 }
+
             }
         });
 
@@ -149,6 +160,8 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+
     private class clearCarsharesTask extends AsyncTask<Object, Void, String> {
         DatabaseConnector databaseConnector = new DatabaseConnector(getApplicationContext());
 
@@ -162,9 +175,12 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-
-            Toast toast = Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT);
-            toast.show();
+            
+            coordinatorLayout = (CoordinatorLayout) findViewById(R.id
+                    .coordinatorLayout);
+            Snackbar snackbar = Snackbar
+                    .make(coordinatorLayout, "Vnosi uspešno pobrisani", Snackbar.LENGTH_LONG);
+            snackbar.show();;
 
             databaseConnector.close();
 

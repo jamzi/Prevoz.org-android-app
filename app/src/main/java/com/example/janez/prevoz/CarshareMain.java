@@ -1,7 +1,10 @@
 package com.example.janez.prevoz;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,9 +28,10 @@ import java.util.List;
 
 public class CarshareMain extends AppCompatActivity {
 
-    PrevozResponse carshares;
-    ListView lvCarshares;
-    TextView tvCarshareMainFromTo;
+    private PrevozResponse carshares;
+    private ListView lvCarshares;
+    private TextView tvCarshareMainFromTo;
+    private CoordinatorLayout coordinatorLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,16 +104,43 @@ public class CarshareMain extends AppCompatActivity {
         @Override
         protected void onPostExecute(PrevozResponse result) {
             super.onPostExecute(result);
+            if (result == null){
+                coordinatorLayout = (CoordinatorLayout) findViewById(R.id
+                        .coordinatorLayout);
+                Snackbar snackbar = Snackbar
+                        .make(coordinatorLayout, "Ni internetne povezave!", Snackbar.LENGTH_INDEFINITE)
+                        .setAction("Poskusi ponovno", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Intent intent = getIntent();
+                                finish();
+                                startActivity(intent);
+                            }
+                        });
 
-            if (result.carshareList.size() == 0 || result == null){
-                tvCarshareMainFromTo.setText("Za to relacijo ni prevoza");
+                // Changing message text color
+                snackbar.setActionTextColor(Color.RED);
+
+                // Changing action button text color
+                View sbView = snackbar.getView();
+                TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+                textView.setTextColor(Color.YELLOW);
+
+                snackbar.show();
             }
             else {
-                List<Carshare> carshares = result.carshareList;
-                lvCarshares = (ListView) findViewById(R.id.lvCarshares);
-                CarshareAdapter adapter = new CarshareAdapter(CarshareMain.this,carshares);
-                lvCarshares.setAdapter(adapter);
+                if (result.carshareList.size() == 0){
+                    tvCarshareMainFromTo.setText("Za to relacijo ni prevoza");
+                }
+                else {
+                    List<Carshare> carshares = result.carshareList;
+                    lvCarshares = (ListView) findViewById(R.id.lvCarshares);
+                    CarshareAdapter adapter = new CarshareAdapter(CarshareMain.this,carshares);
+                    lvCarshares.setAdapter(adapter);
+                }
             }
+
+
         }
     }
 }
