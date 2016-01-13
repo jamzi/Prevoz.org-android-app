@@ -1,5 +1,7 @@
 package com.example.janez.prevoz;
 
+import android.app.AlarmManager;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
@@ -15,8 +17,11 @@ import android.widget.TextView;
 
 import com.example.janez.prevoz.Data.Carshare;
 import com.example.janez.prevoz.Data.CarshareSearchData;
+import com.example.janez.prevoz.Notifications.MyReceiver;
 
 import org.w3c.dom.Text;
+
+import java.util.Calendar;
 
 public class CarshareDetail extends AppCompatActivity {
 
@@ -99,29 +104,40 @@ public class CarshareDetail extends AppCompatActivity {
     }
     private void notification() {
 
-        NotificationCompat.Builder mBuilder =
-                (NotificationCompat.Builder) new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.notification_icon)
-                        .setContentTitle("Obvestilo o prevozu")
-                        .setContentText(carshare.from + "->" + carshare.to + "\n" + carshare.date);
+        Calendar calendar = Calendar.getInstance();
 
-        Intent resultIntent = new Intent(this, CarshareDetail.class);
-        resultIntent.putExtra("carshare", carshare);
+        calendar.set(Calendar.MONTH, 1);
+        calendar.set(Calendar.YEAR, 2016);
+        calendar.set(Calendar.DAY_OF_MONTH, 13);
 
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        stackBuilder.addParentStack(CarshareDetail.class);
+        calendar.set(Calendar.HOUR_OF_DAY, 14);
+        calendar.set(Calendar.MINUTE, 20);
+        calendar.set(Calendar.SECOND, 10);
+        calendar.set(Calendar.AM_PM,Calendar.PM);
 
-        stackBuilder.addNextIntent(resultIntent);
-        PendingIntent resultPendingIntent =
-                stackBuilder.getPendingIntent(
-                        0,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                );
-        mBuilder.setContentIntent(resultPendingIntent);
-        NotificationManager mNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        Intent myIntent = new Intent(CarshareDetail.this, MyReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, myIntent, 0);
 
-        int mId = 1;
-        mNotificationManager.notify(mId, mBuilder.build());
+        AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
+
+        /*Intent intent = new Intent(CarshareDetail.this, CarshareDetail.class);
+        intent.putExtra("carshare", carshare);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+        Notification notification = new NotificationCompat.Builder(this)
+                .setCategory(Notification.CATEGORY_PROMO)
+                .setContentTitle("Prevoz")
+                .setContentText(carshare.from + "->" + carshare.to + ": " + carshare.date)
+                .setSmallIcon(R.drawable.notification_icon)
+                .setAutoCancel(true)
+                .addAction(android.R.drawable.ic_menu_view, "Več o prevozu", contentIntent)
+                .setContentIntent(contentIntent)
+                .setPriority(Notification.PRIORITY_HIGH)
+                .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000}).build();
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.notify(0, notification);*/
+
     }
 }

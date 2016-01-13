@@ -38,6 +38,9 @@ public class CarshareMain extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_carshare_main);
 
+        coordinatorLayout = (CoordinatorLayout) findViewById(R.id
+                .coordinatorLayout);
+
         tvCarshareMainFromTo = (TextView)findViewById(R.id.tvCarshareMainFromTo);
 
         CarshareSearchData search_data = (CarshareSearchData) getIntent().getSerializableExtra("search_data");
@@ -130,7 +133,9 @@ public class CarshareMain extends AppCompatActivity {
             }
             else {
                 if (result.carshareList.size() == 0){
-                    tvCarshareMainFromTo.setText("Za to relacijo ni prevoza");
+                    Snackbar snackbar = Snackbar
+                            .make(coordinatorLayout, "Za to relacijo ni prevoza", Snackbar.LENGTH_LONG);
+                    snackbar.show();;
                 }
                 else {
                     List<Carshare> carshares = result.carshareList;

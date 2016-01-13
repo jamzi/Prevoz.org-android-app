@@ -1,9 +1,5 @@
 package com.example.janez.prevoz;
 
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.app.TaskStackBuilder;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
@@ -11,18 +7,16 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.app.NotificationCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.CursorAdapter;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.janez.prevoz.Adapter.CarshareSearchAdapter;
 import com.example.janez.prevoz.Data.CarshareSearchData;
@@ -34,8 +28,7 @@ import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
-    private CursorAdapter contactAdapter;
-    private EditText etFromCity, etToCity;
+    private AutoCompleteTextView etFromCity, etToCity;
     private Button btnSearchCarshare;
     private DatePicker dpDate;
     private TextView tvInfo;
@@ -47,6 +40,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        coordinatorLayout = (CoordinatorLayout) findViewById(R.id
+                .coordinatorLayout);
+
+        etFromCity = (AutoCompleteTextView) findViewById(R.id.etFromCity);
+        etToCity = (AutoCompleteTextView) findViewById(R.id.etToCity);
+
+        String[] countries = getResources().getStringArray(R.array.cities_array);
+        ArrayAdapter<String> adapter =
+                new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, countries);
+        etFromCity.setAdapter(adapter);
+        etToCity.setAdapter(adapter);
 
         //zadnja iskanja
         new getCarsharesTask().execute();
@@ -70,10 +75,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
 
-
-                etFromCity = (EditText) findViewById(R.id.etFromCity);
-                etToCity = (EditText) findViewById(R.id.etToCity);
-
                 String fromCity = etFromCity.getText().toString();
                 String toCity = etToCity.getText().toString();
 
@@ -91,7 +92,9 @@ public class MainActivity extends AppCompatActivity {
                 String strDate = format.format(calendar.getTime());
 
                 if (fromCity.equals("") || toCity.equals("")) {
-                    tvInfo.setText("Manjkajoči podatki o prevozu!");
+                    Snackbar snackbar = Snackbar
+                            .make(coordinatorLayout, "Manjkajoči podatki o prevozu!", Snackbar.LENGTH_LONG);
+                    snackbar.show();
                 } else {
                     tvInfo.setText("");
                     CarshareSearchData data = new CarshareSearchData(fromCity, toCity, strDate);
@@ -175,9 +178,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-            
-            coordinatorLayout = (CoordinatorLayout) findViewById(R.id
-                    .coordinatorLayout);
+
             Snackbar snackbar = Snackbar
                     .make(coordinatorLayout, "Vnosi uspešno pobrisani", Snackbar.LENGTH_LONG);
             snackbar.show();;

@@ -21,14 +21,14 @@
         android:id="@+id/btnSearchCarshare"
         android:layout_below="@+id/datePicker" />
 
-    <EditText
+    <AutoCompleteTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/etFromCity"
         android:layout_centerHorizontal="true"
         android:hint="Kraj odhoda" />
 
-    <EditText
+    <AutoCompleteTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/etToCity"

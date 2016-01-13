@@ -1,3 +1,58 @@
 <resources>
     <string name="app_name">Prevoz</string>
+    <string-array name="cities_array">
+        <item>Ajdovščinaa</item>
+        <item>Beltinci</item>
+        <item>Bled</item>
+        <item>Brežice</item>
+        <item>Celje</item>
+        <item>Cerknica</item>
+        <item>Črnomelj</item>
+        <item>Domžale</item>
+        <item>Dravograd</item>
+        <item>Gornja Radgona</item>
+        <item>Idrija</item>
+        <item>Ilirska Bistrica</item>
+        <item>Izola</item>
+        <item>Jelšane</item>
+        <item>Jesenice</item>
+        <item>Kidričevo</item>
+        <item>Koper</item>
+        <item>Kranj</item>
+        <item>Kranjska Gora</item>
+        <item>Krško</item>
+        <item>Lendava</item>
+        <item>Ljubljana</item>
+        <item>Ljutomer</item>
+        <item>Lucija</item>
+        <item>Maribor</item>
+        <item>Metlika</item>
+        <item>Mirna</item>
+        <item>Mojstrana</item>
+        <item>Murska Sobota</item>
+        <item>Nova Gorica</item>
+        <item>Novo mesto</item>
+        <item>Ormož</item>
+        <item>Piran</item>
+        <item>Pivka</item>
+        <item>Portorož</item>
+        <item>Postojna</item>
+        <item>Ptuj</item>
+        <item>Ravne na Koroškem</item>
+        <item>Rogaška Slatina</item>
+        <item>Šentrupert</item>
+        <item>Sevnica</item>
+        <item>Sežana</item>
+        <item>Škofja Loka</item>
+        <item>Slovenj Gradec</item>
+        <item>Slovenska Bistrica</item>
+        <item>Tolmin</item>
+        <item>Trebnje</item>
+        <item>Turnišče</item>
+        <item>Unec</item>
+        <item>Velenje</item>
+        <item>Vučja Vas</item>
+        <item>Žalec</item>
+
+    </string-array>
 </resources>
