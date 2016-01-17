@@ -19,9 +19,11 @@
         android:layout_height="wrap_content"
         android:text="Išči"
         android:id="@+id/btnSearchCarshare"
+        android:drawableLeft="@drawable/ic_search_black_24dp"
         android:layout_below="@+id/datePicker" />
 
     <AutoCompleteTextView
+        android:drawableLeft="@drawable/ic_flight_takeoff_black_24dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/etFromCity"
@@ -29,6 +31,7 @@
         android:hint="Kraj odhoda" />
 
     <AutoCompleteTextView
+        android:drawableLeft="@drawable/ic_flight_land_black_24dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/etToCity"

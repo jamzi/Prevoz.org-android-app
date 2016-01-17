@@ -78,21 +78,15 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Komentar"
+        android:scrollbars = "vertical"
+        android:maxLines = "4"
         android:id="@+id/tvCarshareDetailComment"
         android:layout_below="@+id/tvCarshareDetailInsurance"
         android:layout_alignParentStart="true"
         android:layout_marginTop="27dp" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Avtor"
-        android:id="@+id/tvCarshareDetailAuthor"
-        android:layout_below="@+id/tvCarshareDetailComment"
-        android:layout_alignParentEnd="true" />
-
     <Button
+        android:drawableLeft="@drawable/ic_call_black_24dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Pokliči"
@@ -102,19 +96,12 @@
         android:layout_toStartOf="@+id/btnCarshareDetailSMS" />
 
     <Button
+        android:drawableLeft="@drawable/ic_chat_black_24dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Pošlji SMS"
         android:id="@+id/btnCarshareDetailSMS"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Obvestilo"
-        android:id="@+id/btnCarshareDetailNotification"
-        android:layout_above="@+id/btnCarshareDetailCall"
-        android:layout_alignParentStart="true" />
 
 </RelativeLayout>

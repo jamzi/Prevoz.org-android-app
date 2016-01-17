@@ -1,33 +1,32 @@
 package com.example.janez.prevoz;
 
-import android.app.AlarmManager;
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
+import android.text.method.ScrollingMovementMethod;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.janez.prevoz.Data.Carshare;
-import com.example.janez.prevoz.Data.CarshareSearchData;
-import com.example.janez.prevoz.Notifications.MyReceiver;
-
-import org.w3c.dom.Text;
-
-import java.util.Calendar;
 
 public class CarshareDetail extends AppCompatActivity {
 
-    private TextView tvCarshareDetailFrom,tvCarshareDetailTo,
-            tvCarshareDetailDate,tvCarshareDetailPrice,tvCarshareDetailPeople,
-            tvCarshareDetailInsurance,tvCarshareDetailComment,tvCarshareDetailAuthor;
+    private TextView tvCarshareDetailFrom;
+    private TextView tvCarshareDetailTo;
+    private TextView tvCarshareDetailDate;
+    private TextView tvCarshareDetailPrice;
+    private TextView tvCarshareDetailPeople;
+    private TextView tvCarshareDetailInsurance;
+    private TextView tvCarshareDetailComment;
 
     private Carshare carshare;
     @Override
@@ -48,7 +47,7 @@ public class CarshareDetail extends AppCompatActivity {
 
         if (carshare.price != null) {
             tvCarshareDetailPrice = (TextView) findViewById(R.id.tvCarshareDetailPrice);
-            tvCarshareDetailPrice.setText("Cena prevoza: " + Integer.toString(carshare.price) + " €");
+            tvCarshareDetailPrice.setText(Integer.toString(carshare.price) + " €");
         }
 
         if (carshare.numPeople != null) {
@@ -64,17 +63,13 @@ public class CarshareDetail extends AppCompatActivity {
             else{
                 tvCarshareDetailInsurance.setText("Nima zavarovanja");
             }
-
         }
 
         if (carshare.comment != null) {
             tvCarshareDetailComment = (TextView) findViewById(R.id.tvCarshareDetailComment);
-            tvCarshareDetailComment.setText(carshare.comment);
-        }
-
-        if (carshare.author != null) {
-            tvCarshareDetailAuthor = (TextView) findViewById(R.id.tvCarshareDetailAuthor);
-            tvCarshareDetailAuthor.setText(carshare.author);
+            tvCarshareDetailComment.setMovementMethod(new ScrollingMovementMethod());
+            if (carshare.author != null || carshare.author.equals(""))
+                tvCarshareDetailComment.setText(carshare.comment + "\n Avtor: " + carshare.author);
         }
 
         Button btnCarshareDetailSMS = (Button)findViewById(R.id.btnCarshareDetailSMS);
@@ -93,51 +88,44 @@ public class CarshareDetail extends AppCompatActivity {
             }
         });
 
-
-        Button btnCarshareDetailNotification = (Button)findViewById(R.id.btnCarshareDetailNotification);
-        btnCarshareDetailNotification.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                notification();
-            }
-        });
     }
     private void notification() {
 
-        Calendar calendar = Calendar.getInstance();
+        NotificationCompat.Builder mBuilder =
+                (NotificationCompat.Builder) new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.notification_icon)
+                        .setContentTitle("Prevoz - obvestilo")
+                        .setContentText(carshare.from + " -> " + carshare.to + " (" + carshare.date + " )");
 
-        calendar.set(Calendar.MONTH, 1);
-        calendar.set(Calendar.YEAR, 2016);
-        calendar.set(Calendar.DAY_OF_MONTH, 13);
+        Intent resultIntent = new Intent(this, CarshareDetail.class);
+        resultIntent.putExtra("carshare", carshare);
 
-        calendar.set(Calendar.HOUR_OF_DAY, 14);
-        calendar.set(Calendar.MINUTE, 20);
-        calendar.set(Calendar.SECOND, 10);
-        calendar.set(Calendar.AM_PM,Calendar.PM);
-
-        Intent myIntent = new Intent(CarshareDetail.this, MyReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, myIntent, 0);
-
-        AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
-        alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
-
-        /*Intent intent = new Intent(CarshareDetail.this, CarshareDetail.class);
-        intent.putExtra("carshare", carshare);
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, 0);
-
-        Notification notification = new NotificationCompat.Builder(this)
-                .setCategory(Notification.CATEGORY_PROMO)
-                .setContentTitle("Prevoz")
-                .setContentText(carshare.from + "->" + carshare.to + ": " + carshare.date)
-                .setSmallIcon(R.drawable.notification_icon)
-                .setAutoCancel(true)
-                .addAction(android.R.drawable.ic_menu_view, "Več o prevozu", contentIntent)
-                .setContentIntent(contentIntent)
-                .setPriority(Notification.PRIORITY_HIGH)
-                .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000}).build();
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        notificationManager.notify(0, notification);*/
-
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addParentStack(CarshareDetail.class);
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(0,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+        mBuilder.setContentIntent(resultPendingIntent);
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(0, mBuilder.build());
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.detail_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.carshareNotification) {
+            notification();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }

@@ -7,9 +7,4 @@
         android:orderInCategory="100"
         android:title="Počisti zadnja iskanja"
         app:showAsAction="never" />
-    <item
-        android:id="@+id/carshareNotification"
-        android:orderInCategory="200"
-        android:title="Obvestilo o prevozu"
-        app:showAsAction="never" />
 </menu>
